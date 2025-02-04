@@ -1,4 +1,16 @@
-<!-- NG-ZORRO -->
-<a href="https://github.com/NG-ZORRO/ng-zorro-antd" target="_blank" style="display: flex;align-items: center;justify-content: center;height: 100%;width: 100%;">
-  <img height="300" src="https://img.alicdn.com/tfs/TB1X.qJJgHqK1RjSZFgXXa7JXXa-89-131.svg">
-</a>
+<nz-layout class="layout">
+  <nz-header>
+    <div class="logo">
+      <img src="assets/logo.svg" alt="Logo" width="120" height="31">
+    </div>
+  </nz-header>
+  <nz-content style="padding: 0 50px;">
+    <div style="line-height: 64px; display: flex; align-items: center;">
+      <button nz-button (click)="showMainPointModal()">Main Point</button>
+      <button nz-button (click)="showAdditionalPointsModal()">Additional Points</button>
+    </div>
+  </nz-content>
+  <nz-footer style="text-align: center;">
+    Angular Map Application ©2025 Created using NG-ZORRO
+  </nz-footer>
+</nz-layout>

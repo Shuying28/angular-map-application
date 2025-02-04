@@ -1,1 +1,22 @@
-<p>additional-points works!</p>
+<form nz-form [formGroup]="additionalPointsForm" (ngSubmit)="onSubmitAdditionalPoints()">
+    <nz-form-item>
+      <nz-form-label [nzFor]="'latitude'">Latitude</nz-form-label>
+      <nz-form-control>
+        <input nz-input formControlName="latitude" type="text" id="latitude" required />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzFor]="'longitude'">Longitude</nz-form-label>
+      <nz-form-control>
+        <input nz-input formControlName="longitude" type="text" id="longitude" required />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzFor]="'radius'">Radius</nz-form-label>
+      <nz-form-control>
+        <input nz-input formControlName="radius" type="text" id="radius" />
+      </nz-form-control>
+    </nz-form-item>
+    <button nz-button nzType="primary" type="submit">Add Additional Point</button>
+  </form>
+  
