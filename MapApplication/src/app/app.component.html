@@ -1,22 +1,29 @@
-<nz-layout class="layout">
-  <nz-header>
-    <div class="header-content">
+<nz-layout class="flex flex-col h-screen">
+  <nz-header class="bg-sky-950 px-4 flex items-center justify-between">
+    <div class="flex items-center justify-between w-full">
       <div class="logo">
-        <img src="assets/map.svg" alt="Logo" width="55" height="55">
+        <img src="assets/map.svg" alt="Logo" class="w-14 h-14 align-middle" />
       </div>
-      <div class="header-buttons">
-        <button nz-button (click)="showMainPointModal()">Main Point</button>
-        <button nz-button (click)="showAdditionalPointsModal()">Additional Points</button>
+  
+      <div class="flex gap-4 flex-nowrap header-buttons">
+        <button class="text-base" nz-button (click)="showMainPointModal()">
+          Main Point
+        </button>
+        <button class="text-base" nz-button (click)="showAdditionalPointsModal()">
+          Additional Points
+        </button>
       </div>
     </div>
   </nz-header>
-  <nz-content style="padding: 0; flex: 1;">
-    <div id="map" style="height: calc(100vh - 64px - 70px);"></div>
-    <div class="info-panel">
+
+  <nz-content class="flex-1">
+    <div id="map" class="h-[calc(100vh-64px-70px)]"></div>
+    <div class="absolute bottom-[94px] right-4 bg-white text-center p-2 rounded-lg shadow-[0_4px_6px_rgba(0,_0,_0,_0.1)] z-[1000] info-panel">
       Points within radius: {{ pointsWithinRadiusCount }}
     </div>
   </nz-content>
-  <nz-footer class="footer">
+
+  <nz-footer class="text-center text-white bg-sky-950 footer">
     Angular Map Application ©2025 Created by Shu Ying
   </nz-footer>
 </nz-layout>
