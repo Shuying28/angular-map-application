@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { NzModalRef } from 'ng-zorro-antd/modal';
-import { DistanceService } from '../distance.service';
+import { DistanceService } from '../../services/distance.service';
 
 @Component({
   selector: 'app-additional-points',

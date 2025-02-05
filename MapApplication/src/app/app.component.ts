@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { MainPointComponent } from './main-point/main-point.component';
 import { AdditionalPointsComponent } from './additional-points/additional-points.component';
-import { DistanceService } from './distance.service';
+import { DistanceService } from '../services/distance.service';
 import * as L from 'leaflet';
 
 interface PointData {
