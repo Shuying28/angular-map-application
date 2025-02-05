@@ -1,22 +1,26 @@
 <form nz-form [formGroup]="additionalPointsForm" (ngSubmit)="onSubmitAdditionalPoints()">
     <nz-form-item>
-      <nz-form-label [nzFor]="'latitude'">Latitude</nz-form-label>
-      <nz-form-control>
+      <nz-form-label [nzSm]="6" [nzXs]="24"  [nzFor]="'latitude'">Latitude</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter a valid latitude">
         <input nz-input formControlName="latitude" type="text" id="latitude" required />
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label [nzFor]="'longitude'">Longitude</nz-form-label>
-      <nz-form-control>
+      <nz-form-label [nzSm]="6" [nzXs]="24"  [nzFor]="'longitude'">Longitude</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter a valid longitude">
         <input nz-input formControlName="longitude" type="text" id="longitude" required />
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label [nzFor]="'radius'">Radius</nz-form-label>
-      <nz-form-control>
+      <nz-form-label [nzSm]="6" [nzXs]="24"  [nzFor]="'radius'">Radius</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please enter a valid radius">
         <input nz-input formControlName="radius" type="text" id="radius" />
       </nz-form-control>
     </nz-form-item>
-    <button nz-button nzType="primary" type="submit">Add Additional Point</button>
+    <nz-form-item class="primary-button">
+      <nz-form-control [nzSpan]="14" [nzOffset]="6">
+        <button nz-button nzType="primary" type="submit">Add Additional Point</button>
+      </nz-form-control>
+    </nz-form-item>
   </form>
   

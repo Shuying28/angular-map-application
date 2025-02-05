@@ -15,14 +15,17 @@ export class AdditionalPointsComponent {
     radius: new FormControl({ value: '', disabled: true }),
   });
 
-  constructor(private modalRef: NzModalRef, private distanceService: DistanceService) {
+  constructor(
+    private modalRef: NzModalRef,
+    private distanceService: DistanceService
+  ) {
     this.setupFormChanges();
   }
 
   setupFormChanges() {
     const latControl = this.additionalPointsForm.get('latitude');
     const lngControl = this.additionalPointsForm.get('longitude');
-    
+
     if (latControl && lngControl) {
       latControl.valueChanges.subscribe(() => this.updateRadius());
       lngControl.valueChanges.subscribe(() => this.updateRadius());
@@ -33,15 +36,25 @@ export class AdditionalPointsComponent {
     const lat = this.additionalPointsForm.get('latitude')?.value;
     const lng = this.additionalPointsForm.get('longitude')?.value;
     if (lat && lng) {
-      const distance = this.distanceService.calculateDistance(Number(lat), Number(lng));
+      const distance = this.distanceService.calculateDistance(
+        Number(lat),
+        Number(lng)
+      );
       this.additionalPointsForm.get('radius')?.setValue(distance.toFixed(2));
     }
   }
-  
+
   onSubmitAdditionalPoints() {
     if (this.additionalPointsForm.valid) {
       this.modalRef.close(this.additionalPointsForm.value);
       this.additionalPointsForm.reset();
+    } else {
+      Object.values(this.additionalPointsForm.controls).forEach((control) => {
+        if (control.invalid) {
+          control.markAsDirty();
+          control.updateValueAndValidity({ onlySelf: true });
+        }
+      });
     }
   }
 }

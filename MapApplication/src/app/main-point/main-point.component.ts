@@ -20,6 +20,13 @@ export class MainPointComponent {
     if (this.mainPointForm.valid) {
       this.modalRef.close(this.mainPointForm.value);
       this.mainPointForm.reset();
+    } else {
+      Object.values(this.mainPointForm.controls).forEach((control) => {
+        if (control.invalid) {
+          control.markAsDirty();
+          control.updateValueAndValidity({ onlySelf: true });
+        }
+      });
     }
   }
 }
