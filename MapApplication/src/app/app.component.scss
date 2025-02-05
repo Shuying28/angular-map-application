@@ -1,41 +1,84 @@
 .layout {
     display: flex;
     flex-direction: column;
-    height: 100vh; // Full viewport height
-  }
-  
+    height: 100vh;
+}
+
 nz-header {
+    background: #001529;
+    padding: 0 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 20px; // Padding on the sides
-
-    .logo {
-        // Logo styles if needed
-    }
-
-    .header-buttons {
-        margin-right: 20px; // Right margin for button group
-
-        button {
-        margin-left: 10px; // Spacing between buttons
-        }
-    }
 }
 
-nz-content {
-    flex: 1; // Takes up all available space
+.header-content {
     display: flex;
-    flex-direction: column;
-    overflow: hidden; // Prevents content from overflowing
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
 }
 
-#map {
-    width: 100%; // Full width of the content area
-    flex-grow: 1; // Takes up all available space in the content area
+.logo img {
+    vertical-align: middle;
 }
 
-nz-footer {
+.header-buttons {
+    display: flex;
+    gap: 16px;
+    flex-wrap: nowrap;
+}
+
+.header-buttons button {
+    font-size: 16px;
+}
+
+.info-panel {
+    position: absolute;
+    bottom: 94px;
+    right: 16px;
+    background: white;
     text-align: center;
-    padding: 10px 0; // Padding inside the footer
+    padding: 8px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.footer {
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .header-buttons {
+        gap: 8px;
+        justify-content: flex-end;
+    }
+
+    .header-buttons button {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-buttons button {
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+
+    .logo img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .info-panel {
+        bottom: 78px;
+        right: 8px;
+        padding: 6px;
+        font-size: 12px;
+    }
+
+    .footer {
+        font-size: 12px;
+    }
 }

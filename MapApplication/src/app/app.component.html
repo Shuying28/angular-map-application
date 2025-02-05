@@ -1,20 +1,22 @@
 <nz-layout class="layout">
   <nz-header>
-    <div class="logo">
-      <img src="assets/map.svg" alt="Logo" width="55" height="55">
-    </div>
-    <div class="header-buttons">
-      <button nz-button (click)="showMainPointModal()">Main Point</button>
-      <button nz-button (click)="showAdditionalPointsModal()">Additional Points</button>
+    <div class="header-content">
+      <div class="logo">
+        <img src="assets/map.svg" alt="Logo" width="55" height="55">
+      </div>
+      <div class="header-buttons">
+        <button nz-button (click)="showMainPointModal()">Main Point</button>
+        <button nz-button (click)="showAdditionalPointsModal()">Additional Points</button>
+      </div>
     </div>
   </nz-header>
   <nz-content style="padding: 0; flex: 1;">
-    <div id="map" style="height: calc(100vh - 64px - 70px);"></div> <!-- Adjust height calculation if header/footer heights change -->
+    <div id="map" style="height: calc(100vh - 64px - 70px);"></div>
     <div class="info-panel">
       Points within radius: {{ pointsWithinRadiusCount }}
     </div>
   </nz-content>
-  <nz-footer style="text-align: center;">
+  <nz-footer class="footer">
     Angular Map Application ©2025 Created by Shu Ying
   </nz-footer>
 </nz-layout>
