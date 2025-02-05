@@ -1,10 +1,16 @@
-// app.component.ts
 import { Component, OnInit } from '@angular/core';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { MainPointComponent } from './main-point/main-point.component';
 import { AdditionalPointsComponent } from './additional-points/additional-points.component';
 import { DistanceService } from './distance.service';
 import * as L from 'leaflet';
+
+interface PointData {
+  id: string;
+  lat: number;
+  lng: number;
+  radius?: number;
+}
 
 @Component({
   selector: 'app-root',
@@ -16,7 +22,8 @@ export class AppComponent implements OnInit {
   private map!: L.Map;
   private mainPointMarker?: L.Marker;
   private mainPointCircle?: L.Circle;
-  private additionalPoints: L.Marker[] = [];
+  private additionalPoints: { id: string; marker: L.Marker }[] = [];
+  pointsWithinRadiusCount: number = 0;
 
   private mainIcon = L.icon({
     iconUrl: 'assets/blue-icon.png',
@@ -55,10 +62,13 @@ export class AppComponent implements OnInit {
     }).addTo(this.map);
   }
 
-  showMainPointModal() {
+  showMainPointModal(data?: PointData) {
     const modal = this.modalService.create({
       nzTitle: 'Manage Main Point',
       nzContent: MainPointComponent,
+      nzData: {
+        initialData: data,
+      },
       nzFooter: null,
     });
 
@@ -69,16 +79,32 @@ export class AppComponent implements OnInit {
     });
   }
 
-  showAdditionalPointsModal() {
+  showAdditionalPointsModal(data?: PointData) {
     const modal = this.modalService.create({
       nzTitle: 'Add Additional Points',
       nzContent: AdditionalPointsComponent,
+      nzData: {
+        initialData: data,
+      },
       nzFooter: null,
     });
 
     modal.afterClose.subscribe((result) => {
       if (result) {
-        this.addAdditionalPoint(result.latitude, result.longitude);
+        if (data) {
+          this.updateAdditionalPoint(
+            data.id,
+            result.latitude,
+            result.longitude,
+            result.radius
+          );
+        } else {
+          this.addAdditionalPoint(
+            result.latitude,
+            result.longitude,
+            result.radius
+          );
+        }
       }
     });
   }
@@ -90,6 +116,8 @@ export class AppComponent implements OnInit {
     if (this.mainPointCircle) {
       this.mainPointCircle.remove();
     }
+    // center the map on the main point
+    this.map.setView([lat, lng], this.map.getZoom());
     this.mainPointMarker = L.marker([lat, lng], { icon: this.mainIcon }).addTo(
       this.map
     );
@@ -98,16 +126,34 @@ export class AppComponent implements OnInit {
       color: 'green',
     }).addTo(this.map);
     this.distanceService.setMainPoint(lat, lng);
-    this.bindMarkerEvents(this.mainPointMarker, { lat, lng, radius });
+    this.bindMarkerEvents(
+      this.mainPointMarker,
+      { id: 'main', lat, lng, radius },
+      true
+    );
     this.checkAdditionalPoints();
   }
 
-  addAdditionalPoint(lat: number, lng: number) {
+  addAdditionalPoint(lat: number, lng: number, radius: number) {
+    const id = `point-${Date.now()}`;
     const marker = L.marker([lat, lng], { icon: this.additionalIcon }).addTo(
       this.map
     );
-    this.additionalPoints.push(marker);
-    this.bindMarkerEvents(marker, { lat, lng });
+    this.additionalPoints.push({ id, marker });
+    this.map.setView([lat, lng], this.map.getZoom());
+    this.bindMarkerEvents(marker, { id, lat, lng, radius });
+    this.checkAdditionalPoints();
+  }
+
+  updateAdditionalPoint(id: string, lat: number, lng: number, radius: number) {
+    const existingMarkerObj = this.additionalPoints.find((point) => point.id === id);
+
+    if (existingMarkerObj) {
+      existingMarkerObj.marker.setLatLng([lat, lng]);
+      existingMarkerObj.marker.setIcon(this.additionalIcon);
+      this.bindMarkerEvents(existingMarkerObj.marker, { id, lat, lng, radius });
+    }
+
     this.checkAdditionalPoints();
   }
 
@@ -119,41 +165,55 @@ export class AppComponent implements OnInit {
     let countInside = 0;
 
     this.additionalPoints.forEach((marker) => {
-      const distance = center.distanceTo(marker.getLatLng());
+      const distance = center.distanceTo(marker.marker.getLatLng());
       if (distance <= radius) {
-        marker.setIcon(this.highlightedIcon);
+        marker.marker.setIcon(this.highlightedIcon);
         countInside++;
       } else {
-        console.log(marker.getLatLng());
-        marker.setIcon(this.additionalIcon);
+        marker.marker.setIcon(this.additionalIcon);
       }
     });
 
-    console.log(`Count of additional points within radius: ${countInside}`);
+    this.pointsWithinRadiusCount = countInside;
   }
 
   // display details when user clicks on main or additional points
   private bindMarkerEvents(
     marker: L.Marker,
-    data: { lat: number; lng: number; radius?: number }
+    data: PointData,
+    isMainPoint: boolean = false
   ) {
     marker.on('click', () => {
-      console.log('Marker clicked', data);
       const lat = Number(data.lat);
       const lng = Number(data.lng);
       const radius = Number(data.radius);
-      const distance = radius
-        ? radius
-        : this.distanceService.calculateDistance(lat, lng);
+      const content = `
+        <div>
+          Latitude: ${lat.toFixed(3)}, Longitude: ${lng.toFixed(3)},
+          ${
+            isMainPoint
+              ? `Radius: ${radius.toFixed(2)}`
+              : `Distance: ${radius.toFixed(2)} m`
+          }
+          <button class="edit-btn">Edit</button>
+        </div>`;
 
-      L.popup()
+      const popup = L.popup()
         .setLatLng([lat, lng])
-        .setContent(
-          `Latitude: ${lat.toFixed(3)}, Longitude: ${lng.toFixed(
-            3
-          )}, Distance: ${distance.toFixed(2)} m`
-        )
+        .setContent(content)
         .openOn(this.map);
+
+      const editButton = popup.getElement()?.querySelector('.edit-btn');
+      if (editButton) {
+        editButton.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (isMainPoint) {
+            this.showMainPointModal(data);
+          } else {
+            this.showAdditionalPointsModal(data);
+          }
+        });
+      }
     });
   }
 }

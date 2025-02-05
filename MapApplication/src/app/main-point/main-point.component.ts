@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 
@@ -7,14 +7,25 @@ import { NzModalRef } from 'ng-zorro-antd/modal';
   templateUrl: './main-point.component.html',
   styleUrls: ['./main-point.component.scss'],
 })
-export class MainPointComponent {
-  mainPointForm = new FormGroup({
+export class MainPointComponent implements OnInit {
+  mainPointForm: FormGroup = new FormGroup({
     latitude: new FormControl('', [Validators.required]),
     longitude: new FormControl('', [Validators.required]),
     radius: new FormControl('', [Validators.required]),
   });
 
   constructor(private modalRef: NzModalRef) {}
+
+  ngOnInit() {
+    const initialData = this.modalRef.getConfig().nzData?.initialData;
+    if (initialData) {
+      this.mainPointForm.setValue({
+        latitude: initialData.lat,
+        longitude: initialData.lng,
+        radius: initialData.radius || 0,
+      });
+    }
+  }
 
   onSubmitMainPoint() {
     if (this.mainPointForm.valid) {

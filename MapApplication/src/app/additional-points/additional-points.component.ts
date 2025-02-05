@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import { DistanceService } from '../distance.service';
@@ -8,17 +8,29 @@ import { DistanceService } from '../distance.service';
   templateUrl: './additional-points.component.html',
   styleUrls: ['./additional-points.component.scss'],
 })
-export class AdditionalPointsComponent {
+export class AdditionalPointsComponent implements OnInit {
   additionalPointsForm = new FormGroup({
     latitude: new FormControl('', Validators.required),
     longitude: new FormControl('', Validators.required),
     radius: new FormControl({ value: '', disabled: true }),
   });
 
+  @Input() initialData: any;
+
   constructor(
     private modalRef: NzModalRef,
     private distanceService: DistanceService
-  ) {
+  ) {}
+
+  ngOnInit() {
+    const initialData = this.modalRef.getConfig().nzData?.initialData;
+    if (initialData) {
+      this.additionalPointsForm.patchValue({
+        latitude: initialData.lat,
+        longitude: initialData.lng,
+      });
+      this.updateRadius();
+    }
     this.setupFormChanges();
   }
 
@@ -26,10 +38,8 @@ export class AdditionalPointsComponent {
     const latControl = this.additionalPointsForm.get('latitude');
     const lngControl = this.additionalPointsForm.get('longitude');
 
-    if (latControl && lngControl) {
-      latControl.valueChanges.subscribe(() => this.updateRadius());
-      lngControl.valueChanges.subscribe(() => this.updateRadius());
-    }
+    latControl?.valueChanges.subscribe(() => this.updateRadius());
+    lngControl?.valueChanges.subscribe(() => this.updateRadius());
   }
 
   updateRadius() {
@@ -46,6 +56,7 @@ export class AdditionalPointsComponent {
 
   onSubmitAdditionalPoints() {
     if (this.additionalPointsForm.valid) {
+      this.additionalPointsForm.get('radius')?.enable();
       this.modalRef.close(this.additionalPointsForm.value);
       this.additionalPointsForm.reset();
     } else {

@@ -1,4 +1,3 @@
-// distance.service.ts
 import { Injectable } from '@angular/core';
 import * as L from 'leaflet';
 
@@ -14,7 +13,6 @@ export class DistanceService {
 
   // calculate distance between two points (Haversine formula)
   calculateDistance(lat1: number, lng1: number): number {
-    console.log('calculateDistance', this.mainPoint);
     if (!this.mainPoint) return 0;
     const R = 6371e3; // meters
     const φ1 = (lat1 * Math.PI) / 180; // φ, λ in radians
