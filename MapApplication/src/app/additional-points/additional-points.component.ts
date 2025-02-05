@@ -14,8 +14,7 @@ export class AdditionalPointsComponent implements OnInit {
     longitude: new FormControl('', Validators.required),
     radius: new FormControl({ value: '', disabled: true }),
   });
-
-  @Input() initialData: any;
+  initialData: any;
 
   constructor(
     private modalRef: NzModalRef,
@@ -23,11 +22,11 @@ export class AdditionalPointsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    const initialData = this.modalRef.getConfig().nzData?.initialData;
-    if (initialData) {
+    this.initialData = this.modalRef.getConfig().nzData?.initialData;
+    if (this.initialData) {
       this.additionalPointsForm.patchValue({
-        latitude: initialData.lat,
-        longitude: initialData.lng,
+        latitude: this.initialData.lat,
+        longitude: this.initialData.lng,
       });
       this.updateRadius();
     }
@@ -56,7 +55,6 @@ export class AdditionalPointsComponent implements OnInit {
 
   onSubmitAdditionalPoints() {
     if (this.additionalPointsForm.valid) {
-      this.additionalPointsForm.get('radius')?.enable();
       this.modalRef.close(this.additionalPointsForm.value);
       this.additionalPointsForm.reset();
     } else {

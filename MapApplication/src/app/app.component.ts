@@ -64,7 +64,7 @@ export class AppComponent implements OnInit {
 
   showMainPointModal(data?: PointData) {
     const modal = this.modalService.create({
-      nzTitle: 'Manage Main Point',
+      nzTitle: data ? 'Update Main Point' : 'Add Main Point',
       nzContent: MainPointComponent,
       nzData: {
         initialData: data,
@@ -81,7 +81,7 @@ export class AppComponent implements OnInit {
 
   showAdditionalPointsModal(data?: PointData) {
     const modal = this.modalService.create({
-      nzTitle: 'Add Additional Points',
+      nzTitle: data ? 'Update Additional Point' : 'Add Additional Point',
       nzContent: AdditionalPointsComponent,
       nzData: {
         initialData: data,
@@ -95,15 +95,10 @@ export class AppComponent implements OnInit {
           this.updateAdditionalPoint(
             data.id,
             result.latitude,
-            result.longitude,
-            result.radius
+            result.longitude
           );
         } else {
-          this.addAdditionalPoint(
-            result.latitude,
-            result.longitude,
-            result.radius
-          );
+          this.addAdditionalPoint(result.latitude, result.longitude);
         }
       }
     });
@@ -134,24 +129,26 @@ export class AppComponent implements OnInit {
     this.checkAdditionalPoints();
   }
 
-  addAdditionalPoint(lat: number, lng: number, radius: number) {
+  addAdditionalPoint(lat: number, lng: number) {
     const id = `point-${Date.now()}`;
     const marker = L.marker([lat, lng], { icon: this.additionalIcon }).addTo(
       this.map
     );
     this.additionalPoints.push({ id, marker });
     this.map.setView([lat, lng], this.map.getZoom());
-    this.bindMarkerEvents(marker, { id, lat, lng, radius });
+    this.bindMarkerEvents(marker, { id, lat, lng });
     this.checkAdditionalPoints();
   }
 
-  updateAdditionalPoint(id: string, lat: number, lng: number, radius: number) {
-    const existingMarkerObj = this.additionalPoints.find((point) => point.id === id);
+  updateAdditionalPoint(id: string, lat: number, lng: number) {
+    const existingMarkerObj = this.additionalPoints.find(
+      (point) => point.id === id
+    );
 
     if (existingMarkerObj) {
       existingMarkerObj.marker.setLatLng([lat, lng]);
       existingMarkerObj.marker.setIcon(this.additionalIcon);
-      this.bindMarkerEvents(existingMarkerObj.marker, { id, lat, lng, radius });
+      this.bindMarkerEvents(existingMarkerObj.marker, { id, lat, lng });
     }
 
     this.checkAdditionalPoints();
@@ -186,8 +183,11 @@ export class AppComponent implements OnInit {
     marker.on('click', () => {
       const lat = Number(data.lat);
       const lng = Number(data.lng);
-      const radius = Number(data.radius);
+      const radius = data.radius
+        ? Number(data.radius)
+        : this.distanceService.calculateDistance(lat, lng);
       const content = `
+      <div class="flex flex-col text-sm">
         <div>
           Latitude: ${lat.toFixed(3)}, Longitude: ${lng.toFixed(3)},
           ${
@@ -195,8 +195,16 @@ export class AppComponent implements OnInit {
               ? `Radius: ${radius.toFixed(2)}`
               : `Distance: ${radius.toFixed(2)} m`
           }
-          <button class="edit-btn">Edit</button>
-        </div>`;
+        </div>
+        <div class="text-right">
+          <button
+            class="edit-btn px-2 py-1 bg-blue-500 text-white rounded-md text-xs hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-1"
+          >
+            Edit
+          </button>
+        </div>
+      </div>
+    `;
 
       const popup = L.popup()
         .setLatLng([lat, lng])
@@ -207,6 +215,7 @@ export class AppComponent implements OnInit {
       if (editButton) {
         editButton.addEventListener('click', (e) => {
           e.stopPropagation();
+          this.map.closePopup();
           if (isMainPoint) {
             this.showMainPointModal(data);
           } else {

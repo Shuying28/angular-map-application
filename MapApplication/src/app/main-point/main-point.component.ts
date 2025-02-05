@@ -13,16 +13,17 @@ export class MainPointComponent implements OnInit {
     longitude: new FormControl('', [Validators.required]),
     radius: new FormControl('', [Validators.required]),
   });
+  initialData: any;
 
   constructor(private modalRef: NzModalRef) {}
 
   ngOnInit() {
-    const initialData = this.modalRef.getConfig().nzData?.initialData;
-    if (initialData) {
+   this.initialData = this.modalRef.getConfig().nzData?.initialData;
+    if (this.initialData) {
       this.mainPointForm.setValue({
-        latitude: initialData.lat,
-        longitude: initialData.lng,
-        radius: initialData.radius || 0,
+        latitude: this.initialData.lat,
+        longitude: this.initialData.lng,
+        radius: this.initialData.radius || 0,
       });
     }
   }
