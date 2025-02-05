@@ -1,0 +1,41 @@
+.layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; // Full viewport height
+  }
+  
+nz-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px; // Padding on the sides
+
+    .logo {
+        // Logo styles if needed
+    }
+
+    .header-buttons {
+        margin-right: 20px; // Right margin for button group
+
+        button {
+        margin-left: 10px; // Spacing between buttons
+        }
+    }
+}
+
+nz-content {
+    flex: 1; // Takes up all available space
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; // Prevents content from overflowing
+}
+
+#map {
+    width: 100%; // Full width of the content area
+    flex-grow: 1; // Takes up all available space in the content area
+}
+
+nz-footer {
+    text-align: center;
+    padding: 10px 0; // Padding inside the footer
+}

@@ -1,16 +1,17 @@
 <nz-layout class="layout">
   <nz-header>
     <div class="logo">
-      <img src="assets/logo.svg" alt="Logo" width="120" height="31">
+      <img src="assets/map.svg" alt="Logo" width="55" height="55">
     </div>
-  </nz-header>
-  <nz-content style="padding: 0 50px;">
-    <div style="line-height: 64px; display: flex; align-items: center;">
+    <div class="header-buttons">
       <button nz-button (click)="showMainPointModal()">Main Point</button>
       <button nz-button (click)="showAdditionalPointsModal()">Additional Points</button>
     </div>
+  </nz-header>
+  <nz-content style="padding: 0; flex: 1;">
+    <div id="map" style="height: calc(100vh - 64px - 70px);"></div> <!-- Adjust height calculation if header/footer heights change -->
   </nz-content>
   <nz-footer style="text-align: center;">
-    Angular Map Application ©2025 Created using NG-ZORRO
+    Angular Map Application ©2025 Created by Shu Ying
   </nz-footer>
 </nz-layout>
